@@ -9,16 +9,16 @@ api_key = st.sidebar.text_input("API Key", type="password")
 if api_key:
     try:
         genai.configure(api_key=api_key)
-        # هذا هو الاسم الصحيح والمحدث لموديل جوجل المجاني
-        model = genai.GenerativeModel('gemini-1.5-flash-latest') 
+        # هذا السطر تم تحديثه ليشمل المسار الكامل للموديل
+        model = genai.GenerativeModel('models/gemini-1.5-flash-latest') 
         
-        complaint = st.text_area("Patient Scenario:")
+        complaint = st.text_area("Patient Scenario:", placeholder="e.g., 58 year old female with dark urine")
         if st.button("Analyze"):
             with st.spinner('Consulting AI...'):
-                response = model.generate_content(f"Provide a clinical analysis for: {complaint}")
+                response = model.generate_content(complaint)
                 st.markdown("### Clinical Guidance:")
                 st.write(response.text)
     except Exception as e:
         st.error(f"Error: {e}")
 else:
-    st.info("Please enter your API Key to start.")
+    st.info("Enter your API Key to start.")
