@@ -1,28 +1,27 @@
 import streamlit as st
 import google.generativeai as genai
+import os
 
-st.set_page_config(page_title="Dr. Hossam Ali | Clinical AI", layout="wide")
+st.set_page_config(page_title="Dr. Hossam AI", layout="wide")
 st.title("🩺 Clinical Assistant")
 
-api_key = st.sidebar.text_input("Enter Gemini API Key", type="password")
+api_key = st.sidebar.text_input("Enter API Key", type="password")
 
 if api_key:
     try:
         genai.configure(api_key=api_key)
-        # استخدمنا الموديل المستقر جداً لتفادي تحديثات جوجل الحالية
-        model = genai.GenerativeModel('gemini-1.0-pro') 
+        # استخدام الموديل بدون كلمة models/ وبدون إضافات هو الحل الأضمن حالياً
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
-        complaint = st.text_area("Patient Scenario:", placeholder="e.g., 40 year old male with jaundice")
-        
+        complaint = st.text_area("Patient Scenario:")
         if st.button("Analyze"):
             if complaint:
-                with st.spinner('Accessing Clinical Knowledge...'):
-                    response = model.generate_content(f"Act as an expert Hepatologist. Analyze this case: {complaint}")
-                    st.markdown("### Clinical Guidance:")
+                with st.spinner('Analyzing...'):
+                    # إجبار النظام على توليد المحتوى
+                    response = model.generate_content(complaint)
+                    st.success("Analysis Complete:")
                     st.write(response.text)
             else:
-                st.warning("Please enter a scenario.")
+                st.warning("Please enter a case.")
     except Exception as e:
-        st.error(f"System Message: {e}")
-else:
-    st.info("Waiting for API Key...")
+        st.error(f"Note: If you see 404, please check if the API key is active. Error: {e}")
